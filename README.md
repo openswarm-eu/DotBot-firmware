@@ -41,3 +41,10 @@ For details on SEGGER Embedded Studio, read the
 [doc-link]: https://dotbot-firmware.readthedocs.io/en/latest
 [license-badge]: https://img.shields.io/github/license/DotBots/DotBot-firmware
 [license-link]: https://github.com/DotBots/dotbot-firmware/blob/main/LICENSE.txt
+
+
+# Acknowledgement
+
+Part of the source code in this repository is developed within the frame and for the purpose of the OpenSwarm project. This project has received funding from the European Unioan's Horizon Europe Framework Programme under Grant Agreement No. 101093046.
+
+![OpenSwarm - Funded by the European Union](logos/ack.png)
