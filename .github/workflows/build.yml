@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    tags: 'REL-*'
+    tags: '*'
 
   pull_request:
 
@@ -14,11 +14,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ["dotbot-v1", "dotbot-v2", "freebot-v1.0", "lh2-mini-mote", "nrf52833dk", "nrf52840dk", "nrf5340dk-app", "nrf5340dk-net", "sailbot-v1", "xgo-v1", "xgo-v2"]
+        target: ["dotbot-v1", "dotbot-v2", "dotbot-v3", "freebot-v1.0", "lh2-mini-mote", "nrf52833dk", "nrf52840dk", "nrf5340dk-app", "nrf5340dk-net", "sailbot-v1", "xgo-v1", "xgo-v2"]
         config: ["Debug", "Release"]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          submodules: 'true'
       - name: Build projects
         run: BUILD_TARGET=${{ matrix.target }} BUILD_CONFIG=${{ matrix.config }} make docker
       - name: Build for release and convert elf artifacts to hex
@@ -56,24 +58,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: Install Doxygen
-        run: sudo apt-get install -y doxygen graphviz
       - name: Install Sphinx
         run: python -m pip install -r doc/sphinx/requirements.txt
       - name: Build documentation
         run: make doc
 
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Build docker image
-        run: docker build -t dotbot .
+  # Disable Docker build for now because SEGGER requires authentication
+  # to download SEGGER Embedded Studio
+  # docker:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
+  #     - name: Build docker image
+  #       run: docker build -t dotbot .
 
   release:
     runs-on: ubuntu-latest
-    needs: [docker, doc, style, build-success]
+    # needs: [docker, doc, style, build-success]
+    needs: [doc, style, build-success]
     if: >-
       github.event_name == 'push' &&
       startsWith(github.event.ref, 'refs/tags')
@@ -89,6 +92,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts-dotbot-v2
+          path: ./artifacts
+      - name: Download DotBot v3 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts-dotbot-v3
           path: ./artifacts
       - name: Download Sailbot v1 artifacts
         uses: actions/download-artifact@v4

@@ -3,11 +3,6 @@
 
 getting_started
 applications
-examples
-otap
-upgate
-swarmit
-api
 ```
 
 ```{include} ../../README.md
